@@ -102,12 +102,12 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "Perceptron.cpp",
+			"path" : "PerceptronMulticapa.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
-			"path" : "Perceptron.h",
+			"path" : "PerceptronMulticapa.h",
 			"sourceGroupIndex" : 1
 		}
 	],
