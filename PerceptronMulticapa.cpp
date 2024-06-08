@@ -20,7 +20,7 @@ void Perceptron::establecer_pesos(std::vector<double> pesos_iniciales) {
 
 double Perceptron::ejecutar(std::vector<double> datos_de_entrada) {
     //Entrada de un perceptrón simple
-    datos_de_entada.push_back(bias);
+    datos_de_entrada.push_back(bias);
     double suma_ponderada = std::inner_product(
             datos_de_entrada.begin(),
             datos_de_entrada.end(),
@@ -63,10 +63,57 @@ void PerceptronMulticapa::establecer_pesos(std::vector<std::vector<std::vector<d
 
 std::vector<double> PerceptronMulticapa::ejecutar(std::vector<double> datos_de_entrada) {
     valores[0] = datos_de_entrada;
-    for(size_t i=1; i<red.size(); i++){
-        for(size_t j=0; j<capas[i]; j++){
+    for(size_t i=1; i < red.size(); i++){
+        for(size_t j=0; j < capas[i]; j++){
             valores[i][j] = red[i][j].ejecutar(valores[i-1]);
         }
     }
     return valores.back();
+}
+
+//Algoritmo de entrenamiento por retropropagación/backpropagation
+double PerceptronMulticapa::retro(std::vector<double> x, std::vector<double> y) {
+    //Paso 1: Alimentar la red
+    std::vector<double> salidas = ejecutar(x);
+
+    //Paso 2: Calcular el error cuarático medio
+    double error_cuadratico_medio = 0.0;
+    std::vector<double> error;
+
+    for(size_t i=0; i < y.size(); i++){
+        error.push_back(y[i] - salidas[i]);
+        error_cuadratico_medio += error[i] * error[i];
+    }
+
+    error_cuadratico_medio /= capas.back();
+
+    //Paso 3: Calcular los términos de error de salida
+    for(size_t i=0; i < salidas.size(); i++){
+        d.back()[i] = salidas[i] * (1-salidas[i]) * (error[i]);
+    }
+
+    //Paso 4: Calcular el término de error de cada unidad en cada capa
+    for(size_t i = red.size()-2; i > 0; i--){
+        for(size_t h=0; h < red[i].size(); h++){
+            double retro_error = 0.0;
+            for(size_t k=0; k<capas[i+1]; k++){
+                retro_error += red[i+1][k].pesos[h]*valores[i+1][k];
+            }
+            d[i][h] = valores[i][h]*(1-valores[i][h])*retro_error;
+        }
+    }
+
+    //Paso 5 y 6: Calcular las deltas y actualizar los pesos
+    for(size_t i=1; i < red.size(); i++){
+        for(size_t j=0; j < capas[i]; j++){
+            for(size_t k=0; k < capas[i-1]+1; k++){
+                double delta;
+                if(k==capas[i-1]) delta = eta * d[i][j] * bias;
+                else delta = eta * d[i][j] * valores[i-1][k];
+
+                red[i][j].pesos[k] += delta;
+            }
+        }
+    }
+
 }

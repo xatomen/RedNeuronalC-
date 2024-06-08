@@ -7,6 +7,7 @@
 #include <random>
 #include <algorithm>
 #include <time.h>
+#include <cmath>
 
 #ifndef REDNEURONALC___PERCEPTRONMULTICAPA_H
 #define REDNEURONALC___PERCEPTRONMULTICAPA_H
@@ -27,8 +28,12 @@ public:
     std::vector<size_t> capas;
     std::vector<std::vector<double>> valores;
     double bias;
-    void establecer_pesos(std::vector<std::vector<std::vector<double>> pesos_iniciales);
+    void establecer_pesos(std::vector<std::vector<std::vector<double>>> pesos_iniciales);
     std::vector<double> ejecutar(std::vector<double> datos_de_entrada);
+
+    double retro(std::vector<double> x, std::vector<double> y);
+    std::vector<std::vector<double>> d;
+    double eta;
 };
 
 

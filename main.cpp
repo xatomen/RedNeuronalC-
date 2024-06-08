@@ -1,6 +1,13 @@
 #include <iostream>
+#include "PerceptronMulticapa.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+
+    srand(time(NULL));
+    rand();
+    Perceptron p(2); //Perceptron de dos entradas
+
+    
+
     return 0;
 }
